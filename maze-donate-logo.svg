@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <title>Maze Donate</title>
+  <!-- Maze Donate: the Maze family's square frame, holding a solid, lit heart.
+       The frame is the project; the heart is what keeps it going. Black and white. -->
+  <defs>
+    <radialGradient id="md-glow" cx="512" cy="540" r="360" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.26"/>
+      <stop offset="0.45" stop-color="#ffffff" stop-opacity="0.06"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="md-lit" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#cfcfd8"/>
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="1024" rx="220" fill="#000"/>
+  <circle cx="512" cy="540" r="360" fill="url(#md-glow)"/>
+  <rect x="245" y="245" width="534" height="534" fill="none" stroke="#f2f2f4"
+        stroke-width="46" stroke-linejoin="miter"/>
+  <path fill="url(#md-lit)"
+        d="M512 690
+           C 448 640 352 574 352 482
+           C 352 422 396 384 446 384
+           C 476 384 498 398 512 420
+           C 526 398 548 384 578 384
+           C 628 384 672 422 672 482
+           C 672 574 576 640 512 690 Z"/>
+</svg>

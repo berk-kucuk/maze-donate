@@ -1,0 +1,73 @@
+# Maintainer: berkkucukk <berkkucukk@proton.me>
+#
+# LOCAL-BUILD PKGBUILD — see ../build-pkg.sh, which writes `pkgver` and drops
+# `maze-donate-$pkgver.tar.gz` next to this file before invoking makepkg.
+
+pkgname=maze-donate
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Maze Donate — the official Maze Linux donation addresses, verified offline against the package signing key"
+arch=('any')
+url="https://mazelinux.berkkucukk.com.tr"
+license=('GPL3')
+
+# No privileges, no service, no timer. The app opens, checks the bundled signed
+# file with gpgv, and touches the network only when the user presses
+# "Check for new addresses".
+depends=(
+    'maze-python'         # shared Python runtime with PyQt6: /opt/maze/venv
+    'python-qrcode'       # QR matrix (maze-python pulls it in too)
+    'gnupg'               # gpgv
+    'mazelinux-keyring'   # /usr/share/pacman/keyrings/mazelinux.gpg — the signing key
+)
+makedepends=('imagemagick')
+source=("$pkgname-$pkgver.tar.gz")
+sha256sums=('SKIP')
+
+package() {
+    cd "$srcdir/maze-donate-${pkgver}"
+
+    install -dm755 "$pkgdir/opt/maze-donate"
+    cp -r mazedonate data main.py "$pkgdir/opt/maze-donate/"
+    install -m644 MAZE-DONATE.png maze-donate-logo.svg "$pkgdir/opt/maze-donate/"
+
+    install -dm755 "$pkgdir/usr/bin"
+    install -m755 /dev/stdin "$pkgdir/usr/bin/maze-donate" << 'LAUNCHER'
+#!/usr/bin/env bash
+exec /opt/maze/venv/bin/python3 /opt/maze-donate/main.py "$@"
+LAUNCHER
+
+    install -dm755 "$pkgdir/usr/share/applications"
+    install -m644 /dev/stdin "$pkgdir/usr/share/applications/maze-donate.desktop" << 'DESKTOP'
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Maze Donate
+GenericName=Support Maze Linux
+GenericName[tr]=Maze Linux'u Destekle
+GenericName[de]=Maze Linux unterstützen
+Comment=Official, signature-verified donation addresses for Maze Linux
+Comment[tr]=Maze Linux'un imzası doğrulanmış resmi bağış adresleri
+Comment[de]=Offizielle, signaturgeprüfte Spendenadressen für Maze Linux
+Exec=/usr/bin/maze-donate
+Icon=maze-donate
+Terminal=false
+Categories=System;Utility;
+Keywords=donate;donation;support;monero;bitcoin;sponsor;bağış;destek;spende;
+StartupNotify=true
+StartupWMClass=maze-donate
+DESKTOP
+
+    install -Dm644 maze-donate-logo.svg \
+        "$pkgdir/usr/share/icons/hicolor/scalable/apps/maze-donate.svg"
+    for size in 16 22 24 32 48 64 128 256 512; do
+        install -dm755 "$pkgdir/usr/share/icons/hicolor/${size}x${size}/apps"
+        magick MAZE-DONATE.png -resize "${size}x${size}" \
+            "$pkgdir/usr/share/icons/hicolor/${size}x${size}/apps/maze-donate.png" \
+            2>/dev/null || install -m644 MAZE-DONATE.png \
+            "$pkgdir/usr/share/icons/hicolor/${size}x${size}/apps/maze-donate.png"
+    done
+
+    install -Dm644 README.md "$pkgdir/usr/share/doc/$pkgname/README.md"
+    install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

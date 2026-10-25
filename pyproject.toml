@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "maze-donate"
+version = "1.0.0"
+description = "Maze Donate — the official Maze Linux donation addresses, verified offline against the package signing key"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "GPL-3.0-or-later" }
+authors = [{ name = "berkkucukk", email = "berkkucukk@proton.me" }]
+dependencies = ["PyQt6>=6.6.0", "qrcode>=7.4"]
+
+[project.urls]
+Homepage = "https://mazelinux.berkkucukk.com.tr/#donate"
+
+[project.scripts]
+maze-donate = "mazedonate.gui.app:run"
+
+[tool.setuptools.packages.find]
+include = ["mazedonate*"]
